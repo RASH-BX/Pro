@@ -1,0 +1,60 @@
+class MaxSubarraySum{
+    public static int leftflag;
+    public static int rightflag;
+    //递归求解函数
+    public int ToMaxSubarray(int[] arr,int left,int right){
+        if(left==right){
+            return arr[left];
+        }//递归出口
+        int mid=(left+right)/2;
+        int leftmax=ToMaxSubarray(arr,left,mid);//左半段最大值
+        int rightmax=ToMaxSubarray(arr,mid+1,right);//右半段最大值
+        int tomidmax=AddMaxSubarray(arr,left,mid,right);//跨中点最大值
+        //求leftmax,rightmax,tomidmax三个数中最大的一个并返回其值
+        int temp=leftmax;
+        if(rightmax>=temp)
+            temp=rightmax;
+        if(tomidmax>=temp)
+            temp=tomidmax;
+        return temp;
+    }
+    //求跨中点的最大子数组和
+    public int AddMaxSubarray(int[] arr,int left,int mid,int right){
+        int sum=0;
+        int Sleft=(int)Double.NEGATIVE_INFINITY;
+        int Sright=(int)Double.NEGATIVE_INFINITY;
+        //左半边包含左半边右边元素的最大值
+        for(int i=mid;i>=left;i--){
+            sum=sum+arr[i];
+            if(sum>Sleft){
+                Sleft=sum;
+                leftflag=i;
+            }
+        }
+        //右半边包含右半边右边元素的最大值
+        sum=0;
+        for(int j=mid+1;j<=right;j++){
+            sum=sum+arr[j];
+            if(sum>Sright){
+                Sright=sum;
+                rightflag=j;
+            }
+        }
+        return Sleft+Sright;
+    }
+    public void getsubarray(int[] arr){
+        System.out.print("所求最大子数组为：");
+        for(int i=leftflag;i<=rightflag;i++){
+            System.out.print(arr[i]+" ");
+        }
+    }
+}
+public class mod1{
+    public static void main(String[] args){
+        MaxSubarraySum subarray=new MaxSubarraySum();
+        int[] arr={1,-2,4,5,-2,8,3,-2,6,3,7,-1};
+        int finallsum=subarray.ToMaxSubarray(arr,0,arr.length-1);//用finallsum来返回最终结果
+        subarray.getsubarray(arr);
+        System.out.println("\n"+"最大子数组和为："+finallsum);
+    }
+}
